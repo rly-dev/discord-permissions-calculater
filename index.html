@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Permission Calculator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-a"></div>
+    <div class="bg-glow bg-glow-b"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">DC</div>
+        <div>
+          <h1>Discord Permission Calculator</h1>
+          <p>BigInt-safe permission bitfield + invite generator</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-wrap sticky-search">
+          <input id="searchInput" type="text" placeholder="Search permission name or description..." />
+          <div class="filter-row">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="selected">Selected</button>
+            <button class="chip" data-filter="dangerous">Dangerous</button>
+            <button class="chip" id="resetFilterBtn">Reset</button>
+            <span id="resultCount" class="result-count"></span>
+          </div>
+        </div>
+
+        <div class="decode-wrap">
+          <input id="decodeInput" type="text" placeholder="Decode bitfield (decimal or 0x...)" />
+          <button id="decodeBtn" class="btn">Decode</button>
+        </div>
+        <div id="decodeError" class="error-msg" aria-live="polite"></div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section>
+        <div id="warnings" class="warnings"></div>
+        <div id="permissionGrid" class="permission-grid"></div>
+      </section>
+
+      <aside class="side-panel">
+        <section class="panel">
+          <h2>Bitfield</h2>
+          <div class="value-block">
+            <label>Decimal</label>
+            <div class="value-row">
+              <code id="decimalValue">0</code>
+              <button class="icon-btn" data-copy-target="decimal">Copy</button>
+            </div>
+          </div>
+          <div class="value-block">
+            <label>Hex</label>
+            <div class="value-row">
+              <code id="hexValue">0x0</code>
+              <button class="icon-btn" data-copy-target="hex">Copy</button>
+            </div>
+          </div>
+          <div class="value-block">
+            <label>Binary</label>
+            <div class="value-row">
+              <code id="binaryValue" class="binary">0</code>
+              <button class="icon-btn" data-copy-target="binary">Copy</button>
+            </div>
+          </div>
+
+          <p id="selectedCount" class="muted">0 permissions selected</p>
+
+          <div class="actions-row">
+            <button id="selectAllBtn" class="btn">Select All</button>
+            <button id="clearAllBtn" class="btn ghost">Clear All</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Invite Link</h2>
+          <div class="field">
+            <label for="clientIdInput">Client ID</label>
+            <input id="clientIdInput" type="text" placeholder="Your Bot's Application ID" />
+          </div>
+          <div class="field">
+            <label for="guildIdInput">Guild ID (optional)</label>
+            <input id="guildIdInput" type="text" placeholder="Target server ID" />
+          </div>
+          <div class="field">
+            <label for="scopeSelect">Scope</label>
+            <select id="scopeSelect">
+              <option value="bot">bot only</option>
+              <option value="bot+commands" selected>bot + applications.commands</option>
+              <option value="commands">applications.commands only</option>
+            </select>
+          </div>
+          <div class="value-row">
+            <code id="inviteUrl" class="invite-url">https://discord.com/oauth2/authorize...</code>
+          </div>
+          <div class="actions-row">
+            <button id="copyInviteBtn" class="btn">Copy Link</button>
+            <button id="openInviteBtn" class="btn ghost">Open Link</button>
+            <button id="copyShareBtn" class="btn ghost">Copy Share Link</button>
+          </div>
+          <div id="qrCode" class="qr"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Presets</h2>
+          <div id="builtinPresets" class="preset-row"></div>
+          <div class="actions-row">
+            <button id="savePresetBtn" class="btn">Save Current as Preset</button>
+          </div>
+          <div id="customPresets" class="preset-row"></div>
+        </section>
+
+        <section class="panel export-panel">
+          <button id="exportToggle" class="panel-toggle" aria-expanded="false">Export Code</button>
+          <div id="exportContent" class="export-content collapsed">
+            <div class="tab-row">
+              <button class="tab-btn active" data-tab="djs">discord.js v14</button>
+              <button class="tab-btn" data-tab="dpy">discord.py</button>
+              <button class="tab-btn" data-tab="jda">JDA</button>
+              <button class="tab-btn" data-tab="raw">Raw Integer</button>
+            </div>
+            <pre><code id="exportCode"></code></pre>
+            <button id="copyExportBtn" class="btn">Copy</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
